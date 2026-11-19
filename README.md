@@ -1,10 +1,5 @@
-1.Сборка
-# Сервис учёта парка «ФизКат»
-
-## Сборка и запуск
-```bash
-g++ -std=c++17 main.cpp -o fizkat
-./fizkat   # или .\fizkat.exe в Windows
+1. Сборка
+#.\fizkat.exe
 
 2. Наследование
 Transport, Things, EnergyConsumer виртуально наследуются от InventoryItem, Bike — от Transport; Helmet — от Things.
@@ -18,7 +13,14 @@ std::shared_ptr<InventoryItem> — в ServiceCenter.hpp в векторе пар
 
 std::weak_ptr<InventoryItem> — в ServiceCenter.hpp в поле focusItem_ для реализации витрины (setFocus / showFocus). (Чтобы при удаления с помощью remove указатель focusItem обнулился (так как удалятся все share_ptr на данный элемент)).
 
-4.
+4. Все исключения наследуются от общего базового класса FleetError : public std::exception и перехватываются в едином блоке try / catch в main.cpp, поэтому состояние парка при ошибке не нарушается:   
+
+ValidationError — некорректные входные данные: пустой id или name, отрицательное потребление энергии (energy < 0), сложность управления ease вне диапазона 1..10, неположительная максимальная скорость (maxSpeed <= 0), неизвестная команда/тип или попытка удалить/выбрать несуществующий id. 
+
+RegistrationError — попытка добавить в парк объект с уже существующим id или создание журнала Registry нулевой вместимости.
+
+InspectionError — отказ при техосмотре (ServiceCenter::inspectBroken): выбрасывается, если в названии добавляемого объекта встречается подстрока "broken" (в любом регистре).
+SkillMissMatchError — для ошибок несоответствия уровня допуска/навыка.
 
 
 5. Шаблон
